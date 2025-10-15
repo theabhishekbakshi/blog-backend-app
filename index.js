@@ -7,6 +7,7 @@ import webhookRouter from './routes/webhook.route.js'
 import { clerkMiddleware, requireAuth } from '@clerk/express'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import mongoose from 'mongoose';
 
 dotenv.config();
 
