@@ -6,6 +6,9 @@ import commentRouter from './routes/comment.route.js';
 import webhookRouter from './routes/webhook.route.js'
 import { clerkMiddleware, requireAuth } from '@clerk/express'
 import cors from 'cors'
+import dotenv from 'dotenv'
+
+dotenv.config();
 
 const app = express();
 
@@ -51,11 +54,34 @@ app.use((error, req, res, next) => {
 })
 
 
+let isConnected = false;
+async function connectToMongoDB(){
+  try {
+    await mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    isConnected = true;
+    console.log("connected to MongoDB")
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error)
+  }
+}
+
+app.use((req, res, next)=>{
+  if(!isConnected){
+    connectToMongoDB();
+  }
+  next();
+})
+
 
 // app.get("/test", (req,res)=>{
 //     res.status(200).send("It works...")
 // })
-app.listen(PORT, () => {
-    connectDB();
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// app.listen(PORT, () => {
+//     connectDB();
+//     console.log(`Server is running on http://localhost:${PORT}`);
+// });
+
+export default app;
