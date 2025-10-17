@@ -55,30 +55,30 @@ app.use((error, req, res, next) => {
 })
 
 
-// let isConnected = false;
-// async function connectToMongoDB(){
-//   try {
-//     await mongoose.connect(process.env.MONGO_URL, {
-//       useNewUrlParser: true,
-//       useUnifiedTopology: true
-//     });
-//     isConnected = true;
-//     console.log("connected to MongoDB")
-//   } catch (error) {
-//     console.error('Error connecting to MongoDB:', error)
-//   }
-// }
+let isConnected = false;
+async function connectToMongoDB(){
+  try {
+    await mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    isConnected = true;
+    console.log("connected to MongoDB")
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error)
+  }
+}
 
-// app.use((req, res, next)=>{
-//   if(!isConnected){
-//     connectToMongoDB();
-//   }
-//   next();
-// })
+app.use((req, res, next)=>{
+  if(!isConnected){
+    connectToMongoDB();
+  }
+  next();
+})
 
-app.listen(PORT, () => {
-    connectDB();
-    // console.log(`Server is running on http://localhost:${PORT}`);
-});
+// app.listen(PORT, () => {
+//     connectDB();
+//     console.log(`Server is running on http://localhost:${PORT}`);
+// });
 
 export default app;
