@@ -13,9 +13,18 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors(process.env.CLIENT_URL))
-app.use(clerkMiddleware())
-app.use("/webhooks",webhookRouter);
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true,
+}));
+// app.use(clerkMiddleware())
+// app.use("/webhooks",webhookRouter);
+app.use(
+  "/webhooks",
+  express.raw({ type: "application/json" }),
+  webhookRouter
+);
+
 app.use(express.json())
 const PORT = 3000;
 
@@ -45,7 +54,7 @@ app.use(function(req, res, next) {
 // });
 
 
-app.use("/users",userRouter)
+app.use("/users", clerkMiddleware(), userRouter)
 app.use("/posts",postRouter)
 app.use("/comments",commentRouter)
 
